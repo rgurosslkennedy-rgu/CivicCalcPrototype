@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Social Protection Engine</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f4f6f9;
+            --text-color: #212529;
+            --accent-color: #0d6efd; 
+            --border-color: #dee2e6;
+            --base-font-size: 16px;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-primary);
+            color: var(--text-color);
+            font-size: var(--base-font-size);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            transition: background 0.2s, color 0.2s, font-size 0.2s;
+        }
+
+        aside {
+            width: 340px;
+            background-color: var(--bg-secondary);
+            padding: 2rem 1.5rem;
+            border-right: 1px solid var(--border-color);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 3rem;
+            box-sizing: border-box;
+            max-width: 950px;
+            overflow-y: auto;
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+            color: var(--text-color);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        select, input, button {
+            padding: 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            color: var(--text-color);
+            font-size: 1rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        button.run-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        button.run-btn:hover {
+            opacity: 0.9;
+        }
+
+        .output-card {
+            background-color: var(--bg-secondary);
+            border-left: 5px solid var(--accent-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .resource-card {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+            background-color: var(--bg-primary);
+        }
+
+        .tts-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .tts-btn {
+            background-color: #2b7fff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: auto;
+            padding: 0.6rem 1.2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+        }
+
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 1rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Control Panel Sidebar -->
+    <aside aria-label="Control Panel">
+        <h2>🎛️ Control Panel</h2>
+
+        <!-- Accessibility -->
+        <fieldset>
+            <legend>Accessibility Options</legend>
+            <div class="form-group">
+                <label for="theme-picker">Display Theme</label>
+                <select id="theme-picker" onchange="updateTheme(this.value)">
+                    <option value="light">Standard Light Mode</option>
+                    <option value="dark">Standard Dark Mode</option>
+                    <option value="high-contrast">High Contrast</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <label for="size-picker">Text Scaling</label>
+                <select id="size-picker" onchange="updateScale(this.value)">
+                    <option value="16px">Normal Text</option>
+                    <option value="20px">Large Text</option>
+                    <option value="24px">Extra Large Text</option>
+                </select>
+            </div>
+        </fieldset>
+
+        <!-- Calculation Demographics -->
+        <fieldset>
+            <legend>User Profile Setup</legend>
+            <div class="form-group">
+                <label for="country-picker">Target Territory</label>
+                <select id="country-picker" onchange="toggleRegions(this.value)">
+                    <option value="ng">Nigeria</option>
+                    <option value="zw">Zimbabwe</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <label for="region-picker">State / Province Region</label>
+                <select id="region-picker">
+                    <!-- Loaded dynamically via JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <label for="employment-status">Employment Status</label>
+                <select id="employment-status">
+                    <option value="formal">Formal Sector Worker</option>
+                    <option value="informal">Informal Market Trader / Self-Employed</option>
+                    <option value="unemployed">Unemployed</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <label for="salary-field">Monthly Income Baseline</label>
+                <input type="number" id="salary-field" value="150000" min="0">
+            </div>
+        </fieldset>
+
+        <button class="run-btn" onclick="executeCivicEngine()">Run Engine</button>
+    </aside>
+
+    <!-- Main Content Frame -->
+    <main>
+        <header>
+            <h1>Civic Social Protection Engine</h1>
+            <p>An independent public utility calculating statutory deductions, healthcare safety nets, and local assistance programs.</p>
+        </header>
+
+        <!-- Dynamic Output -->
+        <section>
+            <h2>Analysis Summary</h2>
+            <div class="output-card" id="output-box">
+                Configure your options in the sidebar control panel and press "Run Engine" to calculate parameters.
+            </div>
+            
+            <div class="tts-controls">
+                <button class="tts-btn" onclick="triggerSpeech()">🔊 Read Aloud (English)</button>
+                <button class="tts-btn" style="background-color: #555;" onclick="killSpeech()">⏹️ Stop</button>
+            </div>
+        </section>
+
+        <!-- Resource Discovery Calculator Area -->
+        <section style="margin-top: 2rem;">
+            <h2>Matched Demographic Resources</h2>
+            <p>Based on your profile configuration, the following community resources are available in your sector:</p>
+            <div id="resource-box-container" class="resource-grid">
+                <!-- Program listings insert here -->
+            </div>
+        </section>
+
+        <!-- Localization Matrix -->
+        <section style="margin-top: 3rem;">
+            <h2>Linguistic Access Table</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>English Core Term</th>
+                        <th>Igbo Translation (Nigeria)</th>
+                        <th>Shona Translation (Zimbabwe)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Salary / Wage</strong></td>
+                        <td>Ugwọ Ọrụ</td>
+                        <td>Muhoro / Mubhadharo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pension Asset</strong></td>
+                        <td>Ego Nkamịrị / Ezumike Ẹgụ</td>
+                        <td>Chikwama Chemudyandigere</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unemployment</strong></td>
+                        <td>Enweghị Ọrụ</td>
+                        <td>Kushaya Basa</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Health Insurance</strong></td>
+                        <td>Inshọransị Ahụ Ike</td>
+                        <td>Inshurenzi Yehutano</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            This software is a Digital Public Good and is protected under the GNU General Public License v3.0 (GPLv3). It is free to use, modify, and distribute.
+        </footer>
+    </main>
+
+    <script>
+        // Regional configuration lists
+        const regions = {
+            ng: ["Anambra State", "Enugu State", "Lagos State", "Kano State", "FCT Abuja"],
+            zw: ["Harare Province", "Bulawayo Province", "Manicaland", "Midlands"]
+        };
+
+        function toggleRegions(country) {
+            const picker = document.getElementById('region-picker');
+            picker.innerHTML = '';
+            regions[country].forEach(r => {
+
