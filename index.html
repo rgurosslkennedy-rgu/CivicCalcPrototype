@@ -1,4 +1,3 @@
-cat << 'EOF' > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +25,6 @@ cat << 'EOF' > index.html
             </div>
         </fieldset>
 
-        <!-- Fixed form mount container wrapper -->
         <div id="secondary-form-flow" style="display: none;">
             <fieldset style="margin-top: 1rem;">
                 <legend id="legend-demographics">2. Demographic Attributes</legend>
@@ -50,26 +48,26 @@ cat << 'EOF' > index.html
                         <option value="unemployed">Unemployed</option>
                     </select>
                 </div>
+                <div id="sector-wrapper-node" class="form-group" style="margin-top: 0.5rem; display: none;">
+                    <label for="sector-picker">Institutional Sector Tier</label>
+                    <select id="sector-picker">
+                        <option value="public">Public Sector / Civil Service</option>
+                        <option value="private">Private Organized Enterprise</option>
+                    </select>
+                </div>
             </fieldset>
 
             <fieldset id="financial-fieldset" style="margin-top: 1rem;">
                 <legend id="legend-contribution">3. Financial Parameters</legend>
                 <div class="form-group">
-                    <label for="start-year">Timeline Historical Start Year</label>
-                    <select id="start-year" onchange="regenerateYearInputs()">
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                    </select>
+                    <label id="income-label" for="salary-field">Current Salary</label>
+                    <div class="granular-row">
+                        <input type="number" id="salary-field" value="0" min="0">
+                        <select id="current-currency-picker"></select>
+                    </div>
                 </div>
                 <div class="form-group" style="margin-top: 0.5rem;">
-                    <label id="income-label" for="salary-field">Current Salary Base Amount</label>
-                    <input type="number" id="salary-field" value="0" min="0">
-                </div>
-                <div class="form-group" style="margin-top: 0.5rem;">
-                    <label for="income-period">Salary Inflow Tracking Period</label>
+                    <label for="income-period">Salary Period</label>
                     <select id="income-period">
                         <option value="monthly">Monthly Amount</option>
                         <option value="yearly">Yearly Aggregate</option>
@@ -83,16 +81,11 @@ cat << 'EOF' > index.html
                     <label for="calc-strategy" id="lbl-strategy">Calculation Strategy</label>
                     <select id="calc-strategy" onchange="toggleStrategyFields(this.value)">
                         <option value="baseline">Use this income as my baseline estimation</option>
-                        <option value="granular">Custom inflation parameters year-by-year</option>
+                        <option value="granular">Custom actual parameters year-by-year</option>
                     </select>
                 </div>
                 <div id="granular-inputs" style="display: none; margin-top: 0.5rem;">
-                    <label style="color: #0d6efd; margin-bottom: 0.3rem; display: block;">Provide Expected/Historical Inflation Rates (%)</label>
                     <div id="dynamic-year-rows-container"></div>
-                </div>
-                <div id="usd-toggle-wrapper" class="form-group-row" style="margin-top: 0.5rem;">
-                    <input type="checkbox" id="convert-usd-checkbox" style="width: auto;">
-                    <label for="convert-usd-checkbox" id="lbl-usd" style="font-weight: normal; margin-left: 0.5rem;">Convert Final Outputs to USD ($)</label>
                 </div>
             </fieldset>
 
@@ -120,4 +113,3 @@ cat << 'EOF' > index.html
     <script src="script.js"></script>
 </body>
 </html>
-EOF
