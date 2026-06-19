@@ -1,0 +1,19 @@
+:root { --bg-primary: #ffffff; --bg-secondary: #f4f6f9; --text-color: #212529; --accent-color: #0d6efd; --border-color: #dee2e6; }
+body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-secondary); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; }
+.panel { display: none; width: 100%; max-width: 600px; background-color: var(--bg-primary); box-sizing: border-box; padding: 1.5rem; min-height: 100vh; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+.panel.active { display: flex; flex-direction: column; }
+h2 { margin-top: 0; border-bottom: 2px solid var(--accent-color); padding-bottom: 0.4rem; }
+fieldset { border: 1px solid var(--border-color); border-radius: 6px; padding: 1rem; background-color: var(--bg-secondary); }
+legend { font-weight: bold; padding: 0 0.5rem; color: #495057; }
+.form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-group-row { display: flex; align-items: center; }
+label { font-weight: 600; font-size: 0.9rem; }
+select, input, button { padding: 0.6rem; border-radius: 4px; border: 1px solid var(--border-color); font-size: 1rem; background-color: var(--bg-primary); color: var(--text-color); box-sizing: border-box; }
+button.run-btn { background-color: var(--accent-color); color: white; border: none; font-weight: bold; cursor: pointer; padding: 0.8rem; margin-top: auto; font-size: 1.1rem; border-radius: 6px; }
+button.back-btn { background-color: #6c757d; color: white; border: none; font-weight: bold; cursor: pointer; padding: 0.8rem; margin-top: 2rem; font-size: 1rem; border-radius: 6px; }
+.output-card { background-color: var(--bg-secondary); border-left: 5px solid var(--accent-color); padding: 1.2rem; border-radius: 4px; line-height: 1.5; }
+.warning-text { background-color: #fff3cd; color: #664d03; border: 1px solid #ffecb5; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem; }
+.resource-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+.resource-card { border: 1px solid var(--border-color); border-radius: 4px; padding: 0.75rem; background-color: var(--bg-secondary); }
+.resource-card h4 { margin: 0 0 0.25rem 0; color: var(--accent-color); }
+.resource-card p { margin: 0; font-size: 0.85rem; }

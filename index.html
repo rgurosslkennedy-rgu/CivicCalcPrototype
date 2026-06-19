@@ -1,301 +1,123 @@
+cat << 'EOF' > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Civic Social Protection Engine</title>
-    <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f4f6f9;
-            --text-color: #212529;
-            --accent-color: #0d6efd; 
-            --border-color: #dee2e6;
-            --base-font-size: 16px;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, sans-serif; 
-            background-color: var(--bg-primary);
-            color: var(--text-color);
-            font-size: var(--base-font-size);
-            margin: 0;
-            display: flex;
-            min-height: 100vh;
-            transition: background 0.2s, color 0.2s, font-size 0.2s;
-        }
-
-        aside {
-            width: 340px;
-            background-color: var(--bg-secondary);
-            padding: 2rem 1.5rem;
-            border-right: 1px solid var(--border-color);
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            overflow-y: auto;
-        }
-
-        main {
-            flex: 1;
-            padding: 2rem 3rem;
-            box-sizing: border-box;
-            max-width: 950px;
-            overflow-y: auto;
-        }
-
-        h1, h2, h3 {
-            margin-top: 0;
-            color: var(--text-color);
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        label {
-            font-weight: 600;
-        }
-
-        select, input, button {
-            padding: 0.6rem;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-color);
-            font-size: 1rem;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        button.run-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            padding: 0.8rem;
-            margin-top: 0.5rem;
-        }
-
-        button.run-btn:hover {
-            opacity: 0.9;
-        }
-
-        .output-card {
-            background-color: var(--bg-secondary);
-            border-left: 5px solid var(--accent-color);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 4px;
-        }
-
-        .resource-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .resource-card {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 1rem;
-            background-color: var(--bg-primary);
-        }
-
-        .tts-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .tts-btn {
-            background-color: #2b7fff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            width: auto;
-            padding: 0.6rem 1.2rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-        }
-
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 0.75rem;
-            text-align: left;
-        }
-
-        th {
-            background-color: var(--bg-secondary);
-        }
-
-        fieldset {
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 1rem;
-        }
-
-        footer {
-            margin-top: 4rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- Control Panel Sidebar -->
-    <aside aria-label="Control Panel">
-        <h2>🎛️ Control Panel</h2>
-
-        <!-- Accessibility -->
+    <div id="control-panel" class="panel active">
+        <h2 id="control-title">⚙️ Control Panel</h2>
+        
         <fieldset>
-            <legend>Accessibility Options</legend>
+            <legend id="legend-global">1. Global Localisation</legend>
             <div class="form-group">
-                <label for="theme-picker">Display Theme</label>
-                <select id="theme-picker" onchange="updateTheme(this.value)">
-                    <option value="light">Standard Light Mode</option>
-                    <option value="dark">Standard Dark Mode</option>
-                    <option value="high-contrast">High Contrast</option>
-                </select>
-            </div>
-            <div class="form-group" style="margin-top: 0.5rem;">
-                <label for="size-picker">Text Scaling</label>
-                <select id="size-picker" onchange="updateScale(this.value)">
-                    <option value="16px">Normal Text</option>
-                    <option value="20px">Large Text</option>
-                    <option value="24px">Extra Large Text</option>
-                </select>
-            </div>
-        </fieldset>
-
-        <!-- Calculation Demographics -->
-        <fieldset>
-            <legend>User Profile Setup</legend>
-            <div class="form-group">
-                <label for="country-picker">Target Territory</label>
-                <select id="country-picker" onchange="toggleRegions(this.value)">
+                <label for="country-picker" id="lbl-territory">Target Territory</label>
+                <select id="country-picker" onchange="initTerritory(this.value)">
                     <option value="ng">Nigeria</option>
                     <option value="zw">Zimbabwe</option>
                 </select>
             </div>
-
             <div class="form-group" style="margin-top: 0.5rem;">
-                <label for="region-picker">State / Province Region</label>
-                <select id="region-picker">
-                    <!-- Loaded dynamically via JavaScript -->
-                </select>
-            </div>
-
-            <div class="form-group" style="margin-top: 0.5rem;">
-                <label for="employment-status">Employment Status</label>
-                <select id="employment-status">
-                    <option value="formal">Formal Sector Worker</option>
-                    <option value="informal">Informal Market Trader / Self-Employed</option>
-                    <option value="unemployed">Unemployed</option>
-                </select>
-            </div>
-
-            <div class="form-group" style="margin-top: 0.5rem;">
-                <label for="salary-field">Monthly Income Baseline</label>
-                <input type="number" id="salary-field" value="150000" min="0">
+                <label for="lang-picker" id="lbl-language">System Language</label>
+                <select id="lang-picker" onchange="changeLanguage(this.value)"></select>
             </div>
         </fieldset>
 
-        <button class="run-btn" onclick="executeCivicEngine()">Run Engine</button>
-    </aside>
+        <!-- Fixed form mount container wrapper -->
+        <div id="secondary-form-flow" style="display: none;">
+            <fieldset style="margin-top: 1rem;">
+                <legend id="legend-demographics">2. Demographic Attributes</legend>
+                <div class="form-group">
+                    <label for="region-picker" id="lbl-region">State / Province Region</label>
+                    <select id="region-picker"></select>
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label for="age-field" id="lbl-age">User Age (Years)</label>
+                    <input type="number" id="age-field" value="30" min="0" max="120">
+                </div>
+                <div id="children-wrapper" class="form-group" style="margin-top: 0.5rem;">
+                    <label for="children-field">Number of Dependent Children</label>
+                    <input type="number" id="children-field" value="0" min="0">
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label for="employment-status" id="lbl-employment">Employment Track</label>
+                    <select id="employment-status" onchange="toggleEmploymentFields(this.value)">
+                        <option value="formal">Formal Sector Worker</option>
+                        <option value="informal">Informal Trader / Self-Employed</option>
+                        <option value="unemployed">Unemployed</option>
+                    </select>
+                </div>
+            </fieldset>
 
-    <!-- Main Content Frame -->
-    <main>
+            <fieldset id="financial-fieldset" style="margin-top: 1rem;">
+                <legend id="legend-contribution">3. Financial Parameters</legend>
+                <div class="form-group">
+                    <label for="start-year">Timeline Historical Start Year</label>
+                    <select id="start-year" onchange="regenerateYearInputs()">
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label id="income-label" for="salary-field">Current Salary Base Amount</label>
+                    <input type="number" id="salary-field" value="0" min="0">
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label for="income-period">Salary Inflow Tracking Period</label>
+                    <select id="income-period">
+                        <option value="monthly">Monthly Amount</option>
+                        <option value="yearly">Yearly Aggregate</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label id="years-label" for="years-field">Years of Contribution</label>
+                    <input type="number" id="years-field" value="3" min="1" max="40" onchange="regenerateYearInputs()">
+                </div>
+                <div class="form-group" style="margin-top: 0.5rem;" id="strategy-wrapper-node">
+                    <label for="calc-strategy" id="lbl-strategy">Calculation Strategy</label>
+                    <select id="calc-strategy" onchange="toggleStrategyFields(this.value)">
+                        <option value="baseline">Use this income as my baseline estimation</option>
+                        <option value="granular">Custom inflation parameters year-by-year</option>
+                    </select>
+                </div>
+                <div id="granular-inputs" style="display: none; margin-top: 0.5rem;">
+                    <label style="color: #0d6efd; margin-bottom: 0.3rem; display: block;">Provide Expected/Historical Inflation Rates (%)</label>
+                    <div id="dynamic-year-rows-container"></div>
+                </div>
+                <div id="usd-toggle-wrapper" class="form-group-row" style="margin-top: 0.5rem;">
+                    <input type="checkbox" id="convert-usd-checkbox" style="width: auto;">
+                    <label for="convert-usd-checkbox" id="lbl-usd" style="font-weight: normal; margin-left: 0.5rem;">Convert Final Outputs to USD ($)</label>
+                </div>
+            </fieldset>
+
+            <button class="run-btn" id="btn-run" onclick="executeCivicEngine()">Run Engine</button>
+        </div>
+    </div>
+
+    <div id="output-panel" class="panel">
         <header>
-            <h1>Civic Social Protection Engine</h1>
-            <p>An independent public utility calculating statutory deductions, healthcare safety nets, and local assistance programs.</p>
+            <h1 id="main-title">Civic Social Protection Engine</h1>
+            <p id="main-subtitle"></p>
         </header>
-
-        <!-- Dynamic Output -->
         <section>
             <h2>Analysis Summary</h2>
-            <div class="output-card" id="output-box">
-                Configure your options in the sidebar control panel and press "Run Engine" to calculate parameters.
-            </div>
-            
-            <div class="tts-controls">
-                <button class="tts-btn" onclick="triggerSpeech()">🔊 Read Aloud (English)</button>
-                <button class="tts-btn" style="background-color: #555;" onclick="killSpeech()">⏹️ Stop</button>
-            </div>
+            <div class="output-card" id="output-box"></div>
         </section>
-
-        <!-- Resource Discovery Calculator Area -->
         <section style="margin-top: 2rem;">
-            <h2>Matched Demographic Resources</h2>
-            <p>Based on your profile configuration, the following community resources are available in your sector:</p>
-            <div id="resource-box-container" class="resource-grid">
-                <!-- Program listings insert here -->
-            </div>
+            <h2 id="resources-title">Matched Demographic Resources</h2>
+            <div id="resource-box-container" class="resource-grid"></div>
         </section>
+        <button class="back-btn" id="btn-back" onclick="setView('control')">← Back to Setup Profile</button>
+    </div>
 
-        <!-- Localization Matrix -->
-        <section style="margin-top: 3rem;">
-            <h2>Linguistic Access Table</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>English Core Term</th>
-                        <th>Igbo Translation (Nigeria)</th>
-                        <th>Shona Translation (Zimbabwe)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Salary / Wage</strong></td>
-                        <td>Ugwọ Ọrụ</td>
-                        <td>Muhoro / Mubhadharo</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pension Asset</strong></td>
-                        <td>Ego Nkamịrị / Ezumike Ẹgụ</td>
-                        <td>Chikwama Chemudyandigere</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Unemployment</strong></td>
-                        <td>Enweghị Ọrụ</td>
-                        <td>Kushaya Basa</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Health Insurance</strong></td>
-                        <td>Inshọransị Ahụ Ike</td>
-                        <td>Inshurenzi Yehutano</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <footer>
-            This software is a Digital Public Good and is protected under the GNU General Public License v3.0 (GPLv3). It is free to use, modify, and distribute.
-        </footer>
-    </main>
-
-    <script>
-        // Regional configuration lists
-        const regions = {
-            ng: ["Anambra State", "Enugu State", "Lagos State", "Kano State", "FCT Abuja"],
-            zw: ["Harare Province", "Bulawayo Province", "Manicaland", "Midlands"]
-        };
-
-        function toggleRegions(country) {
-            const picker = document.getElementById('region-picker');
-            picker.innerHTML = '';
-            regions[country].forEach(r => {
-
+    <script src="languages.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+EOF
